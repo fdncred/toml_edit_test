@@ -10,9 +10,9 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     let filename = &args[1];
     let contents = fs::read_to_string(filename).unwrap();
-    let doc = contents.parse::<Document>().expect("Invalid TOML file.");
-    let green = "\u{1b}[32m";
-    let reset = "\u{1b}[0m";
+    let mut doc = contents.parse::<Document>().expect("Invalid TOML file.");
+    // let green = "\u{1b}[32m";
+    // let reset = "\u{1b}[0m";
 
     // for (key, val) in doc.iter() {
     //     println!("{}Key{} = [{:#?}] {}Value{} = [{:#?}]", 
@@ -24,6 +24,12 @@ fn main() {
         print!("Key=[{}]\t", key);
         print_item(val);
     }
+
+    // test writing a key/value pair and saving it to see
+    // if it maintains the comments
+    doc["TestKey"] = toml_edit::value("TestValue");
+    let outstr = doc.to_string_in_original_order();
+    fs::write("foo.toml", outstr);
 }
 
 fn print_item(item: &toml_edit::Item) {
@@ -49,6 +55,8 @@ fn print_table(table: &dyn toml_edit::TableLike) {
 // }
 
 fn print_value(value: &toml_edit::Value) {
+    print!("DecorPrefix=[{}]", value.decor().prefix());
+    print!("DecorSuffix=[{}]", value.decor().suffix());
     match value {
         toml_edit::Value::Integer(i) => println!("Integer)={}", i),
         toml_edit::Value::String(s) => println!("String)={}", s),

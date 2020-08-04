@@ -1,5 +1,6 @@
+#comment above
 completion_mode = "circular"
-edit_mode = "vi"
+edit_mode = "vi" #comment to the right
 history_size = 100000
 key_timeout = 500
 disable_table_indexes = false
