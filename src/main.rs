@@ -55,8 +55,8 @@ fn print_table(table: &dyn toml_edit::TableLike) {
 // }
 
 fn print_value(value: &toml_edit::Value) {
-    print!("DecorPrefix=[{}]", value.decor().prefix());
-    print!("DecorSuffix=[{}]", value.decor().suffix());
+    // print!("DecorPrefix=[{}]", value.decor().prefix());
+    // print!("DecorSuffix=[{}]", value.decor().suffix());
     match value {
         toml_edit::Value::Integer(i) => println!("Integer)={}", i),
         toml_edit::Value::String(s) => println!("String)={}", s),
