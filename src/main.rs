@@ -29,7 +29,7 @@ fn main() {
     // if it maintains the comments
     doc["TestKey"] = toml_edit::value("TestValue");
     let outstr = doc.to_string_in_original_order();
-    fs::write("foo.toml", outstr);
+    fs::write("foo.toml", outstr).unwrap();
 }
 
 fn print_item(item: &toml_edit::Item) {
