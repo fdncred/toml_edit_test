@@ -1,8 +1,8 @@
 // use std::fs::{self, OpenOptions};
 // use std::io;
 // use std::path::{Path, PathBuf};
-use std::fs;
 use std::env;
+use std::fs;
 // use toml_edit::{Document, value};
 use toml_edit::Document;
 
@@ -15,13 +15,13 @@ fn main() {
     // let reset = "\u{1b}[0m";
 
     // for (key, val) in doc.iter() {
-    //     println!("{}Key{} = [{:#?}] {}Value{} = [{:#?}]", 
+    //     println!("{}Key{} = [{:#?}] {}Value{} = [{:#?}]",
     //     green, reset, key,
     //     green, reset, val);
     // }
 
     for (key, val) in doc.iter() {
-        print!("Key=[{}]\t", key);
+        print!("Key=[{: >30}]\t", key);
         print_item(val);
     }
 
@@ -43,13 +43,14 @@ fn print_item(item: &toml_edit::Item) {
 }
 
 fn print_table(table: &dyn toml_edit::TableLike) {
-    print!("Table: ");
+    print!("Table)=\n");
     for (key, value) in table.iter() {
-        print!("Key=[{}] ", key);
+        print!("\tKey=[{: >30}] ", key);
         print_item(value);
     }
 }
 
+// This works too
 // fn print_value(value: &toml_edit::Value) {
 //     println!("Value={}", value);
 // }
@@ -64,13 +65,18 @@ fn print_value(value: &toml_edit::Value) {
         toml_edit::Value::DateTime(dt) => println!("DateTime)={}", dt),
         toml_edit::Value::Boolean(b) => println!("Boolean)={}", b),
         toml_edit::Value::Array(a) => print_array(&a),
-        toml_edit::Value::InlineTable(it) => print_table(it),//println!("InlineTable)={}", it),
+        toml_edit::Value::InlineTable(it) => print_table(it), //println!("InlineTable)={}", it),
     }
 }
 
 fn print_array(array: &toml_edit::Array) {
     print!("Array)=");
+    let mut counter = 0;
     for value in array.iter() {
-        println!("\t\tValue: {}", value);
+        if counter == 0 {
+            println!("");
+            counter = counter + 1;
+        }
+        println!("\t\t\tValue: {}", value);
     }
 }
