@@ -4,8 +4,8 @@
 use std::env;
 use std::fs;
 // use toml_edit::{Document, value};
-use toml_edit::Document;
 use indexmap::IndexMap;
+use toml_edit::Document;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -21,14 +21,14 @@ fn main() {
     //     green, reset, val);
     // }
 
-    let mut map = &mut IndexMap::new();
+    let map = &mut IndexMap::new();
     for (key, val) in doc.iter() {
         print!("Key=[{: >30}]\t", key);
         print_item(val, key, map);
     }
 
-    println!("Map=[{:?}]", map);
-    
+    println!("Map\n{:?}", map);
+
     // test writing a key/value pair and saving it to see
     // if it maintains the comments
     doc["TestKey"] = toml_edit::value("TestValue");
@@ -46,7 +46,11 @@ fn print_item(item: &toml_edit::Item, key: &str, map: &mut IndexMap<String, Stri
     }
 }
 
-fn print_table(table: &dyn toml_edit::TableLike, key: &str, map: &mut IndexMap<String, String>) {
+fn print_table(
+    table: &dyn toml_edit::TableLike,
+    _table_key: &str,
+    map: &mut IndexMap<String, String>,
+) {
     print!("Table)=\n");
     for (key, value) in table.iter() {
         print!("\tKey=[{: >30}] ", key);
@@ -66,11 +70,11 @@ fn print_value(value: &toml_edit::Value, key: &str, map: &mut IndexMap<String, S
         toml_edit::Value::Integer(i) => {
             &map.insert(key.to_string(), i.to_string());
             println!("Integer)={}", i)
-        },
+        }
         toml_edit::Value::String(s) => {
             &map.insert(key.to_string(), s.to_string());
             println!("String)={}", s)
-        },
+        }
         toml_edit::Value::Float(f) => {
             &map.insert(key.to_string(), f.to_string());
             println!("Float)={}", f)
