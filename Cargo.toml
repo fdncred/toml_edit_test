@@ -8,3 +8,4 @@ edition = "2018"
 
 [dependencies]
 toml_edit = "0.2.0"
+indexmap = {version = "1.5.1", features = ["serde-1"]}
