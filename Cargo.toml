@@ -9,3 +9,6 @@ edition = "2018"
 [dependencies]
 toml_edit = "0.2.0"
 indexmap = {version = "1.5.1", features = ["serde-1"]}
+ansi_term = {version = "0.12.1", features = ["derive_serde_style"]}
+# serde = "1.0"
+# serde_json = "1.0"
