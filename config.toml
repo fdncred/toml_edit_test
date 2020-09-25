@@ -1,41 +1,139 @@
+skip_welcome_message = true
 header_style = { fg = "yellow", bg = "purple", is_bold = true, is_dimmed = true, is_italic = false, is_underline = false, is_blink = false, is_reverse = false, is_hidden = false, is_strikethrough = false }
-
-#comment above
-completion_mode = "circular"
-edit_mode = "vi" #comment to the right
-history_size = 100000
-key_timeout = 500
 disable_table_indexes = false
-header_align = "l"
-#header_color = "c"
-header_bold = true
 nonzero_exit_errors = true
-startup = ["alias bc [] {calc}", "alias la [path] {ls --full $path}", "alias tlog [] {TortoiseGitProc /command:log /path:.}", "alias add-alias [alias-string] { config get startup | append $alias-string | config set_into startup }", "alias nudown [] {fetch https://api.github.com/repos/nushell/nushell/releases | get assets | select name download_count}", "alias build-profile [arg1 arg2 arg3] { with-env [RUSTFLAGS '-C debuginfo=2 -C opt-level=0 -C link_args=/PROFILE'] { cargo build $arg1 $arg2 $arg3 }}"]
-table_mode = "other"
-plugin_dirs = ["D:\\Src\\GitHub\\nu-plugin-lib\\samples\\Nu.Plugin.Len\\bin\\Debug\\netcoreapp3.1"]
-pivot_mode = "auto"
+table_mode = "rounded" # basic, compact, compact_double, light, thin, with_love, rounded, reinforced
+#plugin_dirs = ["D:\\Src\\GitHub\\nu-plugin-lib\\samples\\Nu.Plugin.Len\\bin\\Debug\\netcoreapp3.1"]
+# plugin_dirs = ["C:\\Users\\username\\source\\repos\\forks\\nushell\\docs\\sample_plugins\\powershell"]
+pivot_mode = "never" # auto, always, never
 ctrlc_exit = false
 complete_from_path = true
 rm_always_trash = true
-use_starship = false
-path = ["C:\\WINDOWS\\system32", "C:\\WINDOWS", "C:\\WINDOWS\\System32\\Wbem", "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\", "C:\\WINDOWS\\System32\\OpenSSH\\", "C:\\Program Files\\PowerShell\\7\\", "C:\\Apps\\Git\\cmd", "C:\\Program Files\\dotnet\\", "C:\\Program Files\\Microsoft SQL Server\\130\\Tools\\Binn\\", "C:\\Program Files\\Microsoft SQL Server\\Client SDK\\ODBC\\170\\Tools\\Binn\\", "C:\\Users\\username\\.cargo\\bin", "C:\\Users\\username\\AppData\\Local\\Microsoft\\WindowsApps", "C:\\Users\\username\\AppData\\Local\\Programs\\Microsoft VS Code Insiders\\bin"]
-#prompt = "echo [ $(ansi green) $(pwd | split row \"/\" | first $(pwd | split row \"/\" | count | = $it - 1 ) | each { str substring \"0,1\" | format \"{$it}/\" } | append $(pwd | split row \"/\" | last ) | str collect) $(do -i { git rev-parse --abbrev-ref HEAD | trim | echo $(ansi reset) \"(\" $(ansi blue) $it $(ansi reset) \")\" | str collect }) $(ansi reset) \"> \"]"
-prompt = "echo [ $(ansi gb) $(pwd) $(ansi reset) \"(\" $(ansi cb) $(do -i { git rev-parse --abbrev-ref HEAD | trim }) $(ansi reset) \")\" $(char newline) $(ansi yb) $(date --format \"%m/%d/%Y %I:%M:%S%.3f %p\" --raw) $(ansi reset) \"> \" ] | str collect"
-#prompt = "echo [ $(ansi green) $(pwd | split row \"\\\" | first $(pwd | split row \"\\\" | count | = $it - 1 ) | each { str substring \"0,3\" | format \"{$it}\\\" } | append $(pwd | split row \"\\\" | last ) | str collect) $(do -i { git rev-parse --abbrev-ref HEAD | trim | echo $(ansi reset) \"(\" $(ansi blue) $it $(ansi reset) \")\" | str collect }) $(ansi reset) \"> \"]"
+
+# startup = ["alias bc [] {calc}", "alias la [path] {ls --long $path}", "alias tlog [] {TortoiseGitProc /command:log /path:.}", "alias add-alias [alias-string] { config get startup | append $alias-string | config set_into startup }", "alias nudown [] {fetch https://api.github.com/repos/nushell/nushell/releases | get assets | select name download_count}", "alias build-profile [arg1 arg2 arg3] { with-env [RUSTFLAGS '-C debuginfo=2 -C opt-level=0 -C link_args=/PROFILE'] { cargo build $arg1 $arg2 $arg3 }}"]
+startup = [
+    #"title NuShell v $(version | get version)",
+    "alias porcelain [] {git status --porcelain --branch}",
+    "alias la [path] {ls --long $path}",
+    "alias tlog [] {TortoiseGitProc /command:log /path:.}",
+    "alias add-alias [alias-string] { config get startup | append $alias-string | config set_into startup }",
+    "alias nudown [] {fetch https://api.github.com/repos/nushell/nushell/releases | get assets | select name download_count}",
+    "alias build-profile [arg1 arg2 arg3] { with-env [RUSTFLAGS '-C debuginfo=2 -C opt-level=0 -C link_args=/PROFILE'] { cargo build $arg1 $arg2 $arg3 }}",
+    #"alias z [a b c d] {cd $(zoxide query $a $b $c $d | str trim)}",
+    "alias zi [a b c d] {echo $(do -i {zoxide query -i $a $b $c $d} | str trim) | cd $it}",
+    "alias za [a b c d] {zoxide add $a $b $c $d}",
+    "alias zq [a b c d] {zoxide query -- $a $b $c $d}",
+    "alias zl [] {zoxide query --list}",
+    "alias zqi [a b c d] {echo $(do -i {zoxide query -i $a $b $c $d}) | cd $it}",
+    "alias zr [a b c d] {zoxide remove $a $b $c $d}",
+    "alias zri [a b c d] {zoxide remove -i $a $b $c $d}",
+    # "alias cat [a] {open $a}",
+    "alias la [a] {ls -a $a}",
+    "alias find [a b c d] {fd $a $b $c $d}",
+    "alias grep [a b c d] {rg $a $b $c $d}",
+    "alias sed [a b c d] {sd $a $b $c $d}",
+    "alias is_nothing [a] { if $(echo $a | str length) == 0 {echo $true} {echo $false}}",
+    "alias bc [a] { math eval $a }",
+    "alias la [path] {ls --long $path}",
+    "alias tlog [] {TortoiseGitProc /command:log /path:.}",
+    "alias dir_exists_in_z [a] {echo [$(if $(= $(do -i {zq $a}) | empty?) == $true {= $false} {= $true})]}",
+    "alias cdz [a] { if $(dir_exists_in_z $a) == $false {za $a ; z $a} { z $a } }",
+    # "alias cd-or-oxide-it [args] { if $args.0 == '' { cd ~  } { if $args.0 == '-' { cd - } { cd $(zoxide query $args.0 $args.1)  } } }",
+    # "alias super-cd [arg_1 arg_2] { echo [$arg_1 $(if $(= $arg_2 | empty?) == $true { = 'empty' } { = $arg_2 })] | format '{$it}' | where $it != 'empty' | wrap args | cd-or-oxide-it $it.args }",
+    "alias nuver [] {version | update features {get features | str collect ', '} }",
+    "alias nuvermd [] {version | update features {get features | str collect ', '} | to md }",
+    # "alias nuver [] {version | insert nushell_features {get features | str collect ', '} | reject features}",
+    "alias bashl [path] {^ls -al $path | lines | skip 1 | parse -r '(?P<perms>[drwx-]{1,10})\\s*(?P<id>\\d+)\\s*(?P<user>\\w+)\\s*(?P<group>\\w+)\\s*(?P<size>\\d+)\\s*(?P<date>\\w{3}\\s+\\d+\\s+\\d+:\\d+)\\s*(?P<name>[A-Za-z0-9- \\.]{1,50})'}",
+    # working
+    "alias s [a] {if $(echo $a | empty?) == $true { cd ~ } { cd $a }}",
+    "alias is_dash [a] { echo $a | if $it == '-' {echo $true} {echo $false}}",
+    # "alias z [a b c d] {if $(echo $a | empty?) == $true { cd ~ } {echo $a | if $it == '-' { cd - } {cd $(zoxide query $a $b $c $d | str trim)}}}",
+    "alias z [a b c d] {if $(echo $a | empty?) == $true { cd ~ } {echo $a | if $it == '-' { cd - } {cd $(zoxide query -- $a $b $c $d | str trim)}}}",
+    "alias run_clippy [] {with-env [RUSTFLAGS '-D warnings'] {cargo clippy --all -- -D clippy::unwrap_used}}",
+    "alias home_abbrev [dir] { echo $dir | str find-replace -a '\\\\' '/' | str find-replace $(ls ~ | get name | first | path dirname | str find-replace -a '\\\\' '/') '~'}",
+    #"alias set_title_str [str] {echo [$(char title) ' ' $str ' ' $(char bel)] | str collect}",
+    "alias set_title_str [str-arg] {echo [$(char title) ' ' $str-arg ' ' $(char bel)] | str collect}",
+    # "alias get_abbrev_pwd_win [] {echo [$(pwd | split row '\\' | first $(pwd | split row '\\' | count | = $it - 1 ) | each { str substring '0,1' | format '{$it}/' } | append $(pwd | split row '\\' | last ) | str collect)] | str collect}",
+    "alias get_abbrev_pwd_win [] {echo [$(pwd | split row '\\' | first $(pwd | split row '\\' | count | = $it - 1 ) |  str substring '0,1' | format '{$it}/' | append $(pwd | split row '\\' | last ) | str collect)] | str collect}",
+    "alias get_abbrev_pwd_lin [] {echo [$(pwd | split row '/' | first $(pwd | split row '/' | count | = $it - 1 ) | each { str substring '0,1' | format '{$it}/' } | append $(pwd | split row '/' | last ) | str collect)] | str collect}",
+    "alias set_title [] {set_title_str $(echo $(get_abbrev_pwd_win))}",
+    # "alias set_title2 [] {echo [$(char title) ' ' $(echo [$(pwd | split row '\\' | first $(pwd | split row '\\' | count | = $it - 1 ) | each { str substring '0,1' | format '{$it}\\' } | append $(pwd | split row '\\' | last ) | str collect)] | str collect) ' ' $(char bel)] | str collect}",
+    "alias cls [] {echo $(char cls)}",
+    # "alias home [dir] { echo $dir | str 'find-replace $(ls ~ | get name | first | path dirname) '~' }",
+    "alias git_br [] {echo [ $(ansi gb) $(pwd) $(ansi reset) '(' $(ansi cb) $(do -i { git rev-parse --abbrev-ref HEAD  } | str trim | str collect ) $(ansi reset) ')' $(char newline) $(ansi yb) $(date format '%m/%d/%Y %I:%M:%S%.3f %p' --raw) $(ansi reset) ' ¯\\_(ツ)_/¯ ' ] | str collect | echo [$it $(char prompt) ' '] | str collect}",
+    "alias help_sub [] {help commands | update subcommands { do -i {get subcommands.name | str collect ', '}}}",
+    ]
+
+path = [
+    "C:\\WINDOWS\\system32",
+    "C:\\WINDOWS",
+    "C:\\WINDOWS\\System32\\Wbem",
+    "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\",
+    "C:\\WINDOWS\\System32\\OpenSSH\\",
+    "C:\\Program Files\\PowerShell\\7\\",
+    "C:\\Apps\\Git\\cmd",
+    "C:\\Apps\\Git\\mingw64\\bin",
+    "C:\\Apps\\Git\\usr\\bin",
+    "C:\\Program Files\\dotnet\\",
+    "C:\\Program Files\\Microsoft SQL Server\\130\\Tools\\Binn\\",
+    "C:\\Program Files\\Microsoft SQL Server\\Client SDK\\ODBC\\170\\Tools\\Binn\\",
+    "C:\\Users\\username\\.cargo\\bin",
+    "C:\\Users\\username\\AppData\\Local\\Microsoft\\WindowsApps",
+    "C:\\Users\\username\\AppData\\Local\\Programs\\Microsoft VS Code Insiders\\bin",
+    "C:\\Apps\\Nushell\\nu_latest"
+]
+#prompt = "echo [ $(ansi green) $(pwd | split row \"/\" | first $(pwd | split row \"/\" | count | = $it - 1 ) | each { str substring \"0,1\" | format \"{$it}/\" } | append $(pwd | split row \"/\" | last ) | str collect) $(do -i { git rev-parse --abbrev-ref HEAD | str trim | echo $(ansi reset) \"(\" $(ansi blue) $it $(ansi reset) \")\" | str collect }) $(ansi reset) \"> \"]"
+#prompt = "echo [ $(ansi green) $(pwd | split row '/' | first $(pwd | split row '/' | count | = $it - 1 ) | each { str substring '0,1' | format '{$it}/' } | append $(pwd | split row '/' | last ) | str collect) $(do -i { git rev-parse --abbrev-ref HEAD | str trim | echo $(ansi reset) '(' $(ansi blue) $it $(ansi reset) ')' | str collect }) $(ansi reset) '> ']"
+
+#prompt = "echo [ $(ansi gb) $(pwd) $(ansi reset) '(' $(ansi cb) $(do -i { git rev-parse --abbrev-ref HEAD | str trim }) $(ansi reset) ')' $(char newline) $(ansi yb) $(date format '%m/%d/%Y %I:%M:%S%.3f %p' --raw) $(ansi reset) '> ' ] | str collect"
+#prompt = "za $(pwd) ; echo `{{$(set_title2)}}` ; echo [ $(ansi gb) $(pwd) $(ansi reset) '(' $(ansi cb) $(do -i { git rev-parse --abbrev-ref HEAD  } | str trim | str collect ) $(ansi reset) ')' $(char newline) $(ansi yb) $(date format '%m/%d/%Y %I:%M:%S%.3f %p' --raw) $(ansi reset) ' ¯\\_(ツ)_/¯ ' ] | str collect | echo [$it $(char prompt) ' '] | str collect"
+# not working prompt = "= `{{$(za $(pwd))}} {{$(set_title2)}} {{$(echo [ $(ansi gb) $(pwd) $(ansi reset) '(' $(ansi cb) $(do -i { git rev-parse --abbrev-ref HEAD  } | str trim | str collect ) $(ansi reset) ')' $(char newline) $(ansi yb) $(date format '%m/%d/%Y %I:%M:%S%.3f %p' --raw) $(ansi reset) ' ¯\\_(ツ)_/¯ ' ] | str collect | echo [$it $(char prompt) ' '] | str collect)}}`"
+# working prompt = "= `{{$(za $(pwd))}} {{$(set_title)}} {{$(git_br)}}`"
+
+prompt = "za $(pwd) | = `{{$(set_title)}} {{$(git_br)}}`"
+# prompt = "= `{{$(set_title)}} {{$(git_br)}}`"
+# prompt = "= `{{$(set_title)}}`"
+# prompt = "= `{{$(git_br)}}`"
+#prompt = 'za $(pwd) | echo `{{$(set_title)}} {{$(git_br)}}`'
+
+#prompt = "echo [ $(ansi green) $(pwd | split row \"\\\" | first $(pwd | split row \"\\\" | count | = $it - 1 ) | each { str substring \"0,3\" | format \"{$it}\\\" } | append $(pwd | split row \"\\\" | last ) | str collect) $(do -i { git rev-parse --abbrev-ref HEAD | str trim | echo $(ansi reset) \"(\" $(ansi blue) $it $(ansi reset) \")\" | str collect }) $(ansi reset) \"> \"]"
+#prompt = 'echo [ $(ansi green) $(pwd | split row '\' | first $(pwd | split row '\' | count | = $it - 1 ) | each { str substring '0,1' | format '{$it}\' } | append $(pwd | split row '\' | last ) | str collect) $(do -i { git rev-parse --abbrev-ref HEAD | str trim | echo $(ansi reset) '(' $(ansi blue) $it $(ansi reset) ')' | str collect }) $(ansi reset) '> '] | str collect'
+
+[color_config]
+primitive_int = "green"
+primitive_decimal = "red"
+primitive_filesize = "u"
+primitive_string = "wd"
+primitive_line = "yellow"
+primitive_columnpath = "cyan"
+primitive_pattern = "white"
+primitive_boolean = "green"
+primitive_date = "pu"
+primitive_duration = "blue"
+primitive_range = "purple"
+primitive_path = "yellow"
+primitive_binary = "cyan"
+separator_color = "yd"
+header_align = "l" # left|l, right|r, center|c
+header_color = "c" # green|g, red|r, blue|u, black|b, yellow|y, purple|p, cyan|c, white|w
+header_bold = true
+# header_style = "cb"
+index_color = "gb"
 
 #These, in the rustyline section are not implemeted yet
-[rustyline]
+[line_editor]
 max_history_size = 100000
-history_duplicates = "alwaysadd"
-history_ignore_space = true
-completion_type = "circular"
-completion_prompt_limit = 1
-keyseq_timeout = 500
-edit_mode = "vi"
+history_duplicates = "ignoreconsecutive" #alwaysadd, ignoreconsecutive
+history_ignore_space = false
+completion_type = "circular" #circular, list, fuzzy
+completion_prompt_limit = 100
+keyseq_timeout_ms = 500
+edit_mode = "emacs" #emacs, vi
 auto_add_history = true
-bell_style = "audible"
+bell_style = "audible" #audible, none, visible
 color_mode = "enable"
 tab_stop = 4
+completion_match_method = "case-insensitive" #case-insensitive, case-sensitive
 
 [textview]
 term_width = "default"
@@ -50,6 +148,7 @@ snip = true
 wrapping_mode = "NoWrapping"
 use_italics = true
 paging_mode = "QuitIfOneScreen"
+# pager = "less -RFX"
 pager = "less"
 theme = "TwoDark"
 
@@ -59,14 +158,14 @@ APPDATA = "C:\\Users\\username\\AppData\\Roaming"
 CommonProgramFiles = "C:\\Program Files\\Common Files"
 "CommonProgramFiles(x86)" = "C:\\Program Files (x86)\\Common Files"
 CommonProgramW6432 = "C:\\Program Files\\Common Files"
-COMPUTERNAME = "blahLENOVO"
+COMPUTERNAME = "workstation"
 ComSpec = "C:\\WINDOWS\\system32\\cmd.exe"
 DEFLOGDIR = "C:\\ProgramData\\McAfee\\DesktopProtection"
 DriverData = "C:\\Windows\\System32\\Drivers\\DriverData"
 HOMEDRIVE = "C:"
 HOMEPATH = "\\Users\\username"
 LOCALAPPDATA = "C:\\Users\\username\\AppData\\Local"
-LOGONSERVER = "\\\\blahLENOVO"
+LOGONSERVER = "\\\\workstation"
 NUMBER_OF_PROCESSORS = "16"
 NVIDIAWHITELISTED = "0x01"
 OneDrive = "C:\\Users\\username\\OneDrive"
@@ -87,14 +186,15 @@ PUBLIC = "C:\\Users\\Public"
 SHIM_MCCOMPAT = "0x810000001"
 SystemDrive = "C:"
 SystemRoot = "C:\\WINDOWS"
-TEMP = "C:\\Users\\blah~1\\AppData\\Local\\Temp"
-TMP = "C:\\Users\\blah~1\\AppData\\Local\\Temp"
-USERDOMAIN = "blahLENOVO"
-USERDOMAIN_ROAMINGPROFILE = "blahLENOVO"
+TEMP = "C:\\Users\\user~1\\AppData\\Local\\Temp"
+TMP = "C:\\Users\\user~1\\AppData\\Local\\Temp"
+USERDOMAIN = "workstation"
+USERDOMAIN_ROAMINGPROFILE = "workstation"
 USERNAME = "username"
 USERPROFILE = "C:\\Users\\username"
 VSEDEFLOGDIR = "C:\\ProgramData\\McAfee\\DesktopProtection"
 windir = "C:\\WINDOWS"
 WSLENV = "WT_SESSION::WT_PROFILE_ID"
-WT_PROFILE_ID = "{2b372ca1-1ee2-403d-a839-6d63077ad871}"
-WT_SESSION = "be48c19c-65bb-45d5-94e0-678e3088f7c0"
+# WT_PROFILE_ID = "{2b372ca1-1ee2-403d-a839-6d63077ad871}"
+# WT_SESSION = "be48c19c-65bb-45d5-94e0-678e3088f7c0"
+# _ZO_ECHO = "1"
